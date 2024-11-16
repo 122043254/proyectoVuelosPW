@@ -28,6 +28,8 @@ Route::get('/hoteles/{id}', [HotelController::class, 'show'])->name('detalles.ho
 Route::get('/registro',[ControladorVistas::class,'registro'])->name('rutaRegistro');
 Route::get('/reportesAdmin',[ControladorVistas::class,'reportesAdmin'])->name('rutaReportesAdmin');
 Route::get('/recuperacionContrasena',[ControladorVistas::class,'recuperacionContrasenas'])->name('rutaRecuperacionContrasena');
+Route::get('/perfilUsuario',[ControladorVistas::class,'perfilUsuario'])->name('rutaPerfilUsuario');
+
 
 
 //RUTAS POST

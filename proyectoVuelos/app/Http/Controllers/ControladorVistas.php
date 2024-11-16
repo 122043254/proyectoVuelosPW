@@ -73,6 +73,11 @@ class ControladorVistas extends Controller
         return view('recuperacionContrasena');
     }
 
+    public function perfilUsuario()
+    {
+        return view('perfilUsuario');
+    }
+
     //FUNCIONES VALIDACION
     public function procesoInicioSesion(validadorLogin $requestIS)
     {
