@@ -24,10 +24,6 @@ class usuariosController extends Controller
         return view('recuperacionContrasena');
     }
 
-    public function storeUsuario(Request $request)
-    {
-        DB::table('')
-
     //FUNCIONES VALIDACION
     public function procesoInicioSesion(validadorLogin $requestIS)
     {

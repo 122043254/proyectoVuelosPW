@@ -27,6 +27,8 @@ Route::get('/panelAdmin',[ControladorVistas::class,'panelAdmin'])->name('rutaPan
 Route::get('/registro',[ControladorVistas::class,'registro'])->name('rutaRegistro');
 Route::get('/reportesAdmin',[ControladorVistas::class,'reportesAdmin'])->name('rutaReportesAdmin');
 Route::get('/recuperacionContrasena',[ControladorVistas::class,'recuperacionContrasenas'])->name('rutaRecuperacionContrasena');
+Route::get('/perfilUsuario',[ControladorVistas::class,'perfilUsuario'])->name('rutaPerfilUsuario');
+
 
 
 //RUTAS POST
