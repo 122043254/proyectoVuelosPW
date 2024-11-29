@@ -44,6 +44,7 @@
     <p>
         - Para más información sobre nuestras políticas de cancelación, no dudes en contactar a nuestro equipo de atención al cliente a través de nuestro formulario de contacto o llamando a nuestro número de servicio.
     </p>
+    <br>
 </div>
 
 @endsection

@@ -24,7 +24,6 @@ Route::get('/politicasCancelacion',[ControladorVistas::class,'politicasCancelaci
 Route::get('/gestionVyHAdmin',[ControladorVistas::class,'gestionVyHAdmin'])->name('rutaGestionVyHAdmin');
 Route::get('/iniciosesion',[ControladorVistas::class,'iniciosesion'])->name('rutaIniciosesion');
 Route::get('/panelAdmin',[ControladorVistas::class,'panelAdmin'])->name('rutaPanelAdmin');
-Route::get('/hoteles/{id}', [HotelController::class, 'show'])->name('detalles.hotel');
 Route::get('/registro',[ControladorVistas::class,'registro'])->name('rutaRegistro');
 Route::get('/reportesAdmin',[ControladorVistas::class,'reportesAdmin'])->name('rutaReportesAdmin');
 Route::get('/recuperacionContrasena',[ControladorVistas::class,'recuperacionContrasenas'])->name('rutaRecuperacionContrasena');

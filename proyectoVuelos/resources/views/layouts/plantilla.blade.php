@@ -10,38 +10,57 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700&display=swap"   rel="stylesheet">
     <style>
 
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
+      /* Estilos básicos para html y body */
+      html, body {
+          height: auto; /* Permite que el contenido determine la altura */
+          min-height: 100%; /* Garantiza que llene al menos el alto de la pantalla */
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+      }
 
-        main {
-            flex: 1 0 auto;
-        }
+      /* Asegura que el contenido principal ocupe el espacio restante */
+      main {
+          flex: 1 0 auto;
+      }
 
-        footer {
-            flex-shrink: 0;
-        }
+      /* Hace que el footer permanezca al final */
+      footer {
+          flex-shrink: 0;
+      }
 
-        .navbar-hidden{
-            transform: translateY(-100%);
-            transition: transform 0.3s ease-in-out;
-        }
+      /* Estilo del navbar oculto */
+      .navbar-hidden {
+          transform: translateY(-100%); /* Desplaza el navbar fuera de la pantalla */
+          transition: transform 0.3s ease-in-out; /* Animación suave */
+      }
+
+      /* Asegura que el navbar esté siempre sobre otros elementos */
+      nav {
+          position: sticky; /* Hace que el navbar permanezca en la parte superior */
+          top: 0; /* Alinea al inicio del scroll */
+          z-index: 1030; /* Prioridad alta para evitar que lo oculten otros elementos */
+          background: #f8f9fa; /* Fondo para que se vea claro sobre otros elementos */
+          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para resaltar el navbar */
+      }
+
     </style>
      <script>
         // JavaScript para ocultar la barra de navegación al hacer scroll hacia abajo
         let lastScrollTop = 0;
         window.addEventListener("scroll", function() {
             const navbar = document.querySelector("nav");
+            if (!navbar) return; // Asegúrate de que el navbar existe
+
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
             if (scrollTop > lastScrollTop) {
-                navbar.classList.add("navbar-hidden");
+                navbar.classList.add("navbar-hidden"); // Oculta el navbar
             } else {
-                navbar.classList.remove("navbar-hidden");
+                navbar.classList.remove("navbar-hidden"); // Muestra el navbar
             }
-            lastScrollTop = scrollTop;
+
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Prevenir valores negativos
         });
     </script>
     <title>@yield('titulo')</title>

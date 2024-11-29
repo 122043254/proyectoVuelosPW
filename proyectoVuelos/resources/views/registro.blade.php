@@ -15,8 +15,13 @@
     <form action="/procesarRegistro" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="nombre" class="form-label">{{__('Nombre completo')}}</label>
+            <label for="nombre" class="form-label">{{__('Nombre')}}</label>
             <input type="text" class="form-control" id="nombre" name="nombre" value="{{ old('nombre') }}">
+            <small class="text-danger fst-italic">{{ $errors->first('nombre') }}</small>
+        </div>
+        <div class="mb-3">
+            <label for="apellidos" class="form-label">{{__('Apellidos')}}</label>
+            <input type="text" class="form-control" id="apellidos" name="apellidos" value="{{ old('apellidos') }}">
             <small class="text-danger fst-italic">{{ $errors->first('nombre') }}</small>
         </div>
         <div class="mb-3">
