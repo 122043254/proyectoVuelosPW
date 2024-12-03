@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('apellidos');
             $table->string('telefono');
-            $table->string('email');
+            $table->string('email')->unique(); // Asegura que el correo es único.
+            $table->timestamp('email_verified_at')->nullable(); // Verificación opcional.
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

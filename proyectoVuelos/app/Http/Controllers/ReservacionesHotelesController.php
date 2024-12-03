@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\hoteles;
+use App\Models\reservacionesHoteles;
 use Illuminate\Http\Request;
 
-class HotelesController extends Controller
+class ReservacionesHotelesController extends Controller
 {
+    public function reservarHotel()
+    {
+        return view('reservacionesHoteles');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -34,7 +39,7 @@ class HotelesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(hoteles $hoteles)
+    public function show(reservacionesHoteles $reservacionesHoteles)
     {
         //
     }
@@ -42,7 +47,7 @@ class HotelesController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(hoteles $hoteles)
+    public function edit(reservacionesHoteles $reservacionesHoteles)
     {
         //
     }
@@ -50,7 +55,7 @@ class HotelesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, hoteles $hoteles)
+    public function update(Request $request, reservacionesHoteles $reservacionesHoteles)
     {
         //
     }
@@ -58,7 +63,7 @@ class HotelesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(hoteles $hoteles)
+    public function destroy(reservacionesHoteles $reservacionesHoteles)
     {
         //
     }

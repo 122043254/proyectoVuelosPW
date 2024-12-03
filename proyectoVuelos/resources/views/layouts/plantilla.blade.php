@@ -80,7 +80,7 @@
               Vuelos
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{ route('rutaBusquedaVuelos') }}">{{__('Buscar Vuelos')}}</a></li>
+              <li><a class="dropdown-item" href="{{ route('vuelos.index') }}">{{__('Buscar Vuelos')}}</a></li>
               <li><a class="dropdown-item" href="{{ route('rutaReservacionesVuelos') }}">{{__('Reservar Vuelos')}}</a></li>
             </ul>
           </li>
@@ -89,7 +89,7 @@
               Hoteles
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{ route('rutaBusquedaHoteles') }}">{{__('Buscar Hoteles')}}</a></li>
+              <li><a class="dropdown-item" href="{{ route('hoteles.index') }}">{{__('Buscar Hoteles')}}</a></li>
               <li><a class="dropdown-item" href="{{ route('rutaReservacionesHoteles') }}">{{__('Reservar Hoteles')}}</a></li>
             </ul>
           </li>

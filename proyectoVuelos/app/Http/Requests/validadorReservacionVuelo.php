@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class validadorVuelos extends FormRequest
+class validadorReservacionVuelo extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +22,13 @@ class validadorVuelos extends FormRequest
     public function rules(): array
     {
         return [
+            'nombrePasajero' => 'required|string|max:255',
             'origen' => 'required|string|max:255',
             'destino' => 'required|string|max:255',
             'fechaSalida' => 'required|date|after_or_equal:today',
-            'fechaLlegada' => 'required|date|after_or_equal:fechaSalida',
-            'horaSalida' => 'required|date_format:H:i',
-            'horaLlegada' => 'required|date_format:H:i|after:horaSalida',
+            'fechaRegreso' => 'nullable|date|after:fechaSalida',
+            'numeroAdultos' => 'required|integer|min:1',
+            'numeroNinos' => 'nullable|integer|min:0',
         ];
     }
 }

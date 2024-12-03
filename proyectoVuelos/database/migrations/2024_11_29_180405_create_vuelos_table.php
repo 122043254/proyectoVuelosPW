@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('origen');
             $table->string('destino');
-            $table->string('fechaSalida');
-            $table->string('fechaLlegada');
-            $table->string('horaSalida');
-            $table->string('horaLlegada');
+            $table->date('fechaSalida');
+            $table->date('fechaLlegada');
+            $table->time('horaSalida');
+            $table->time('horaLlegada');
             $table->timestamps();
         });
     }
