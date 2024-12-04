@@ -48,4 +48,10 @@ class ReservacionesVuelosController extends Controller
 
         return redirect()->back()->with('exito', 'Reservación realizada con éxito para el vuelo de ' . $request->origen . ' a ' . $request->destino . '.');
     }
+    public function procesarReservacionVuelo(validadorVuelos $requestRV)
+    {
+        $validacion5 = $requestRV->validated();
+        session()->flash('exito', 'Reservación exitosa');
+        return to_route('rutaReservacionesVuelos');
+    }
 }

@@ -8,6 +8,10 @@ use App\Http\Requests\validadorLogin;
 use App\Http\Requests\validadorRecuperacion;
 use App\Http\Requests\validadorHoteles;
 use App\Http\Requests\validadorVuelos;
+//modelos de vuelo y hoteles
+use App\Models\Vuelo;
+use App\Models\Hotel;
+
 
 
 class ControladorVistas extends Controller
@@ -25,7 +29,9 @@ class ControladorVistas extends Controller
 
     public function gestionVyHAdmin()
     {
-        return view('gestionVyHAdmin');
+        $vuelos = Vuelo::all();
+        $hoteles = Hotel::all();
+        return view('gestionVyHAdmin', compact('vuelos', 'hoteles'));
     }
 
     public function panelAdmin()
