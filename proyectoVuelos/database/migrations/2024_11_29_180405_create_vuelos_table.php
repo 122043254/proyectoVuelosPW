@@ -13,12 +13,16 @@ return new class extends Migration
     {
         Schema::create('vuelos', function (Blueprint $table) {
             $table->id();
+            $table->string('numero_vuelo');
+            $table->string('aerolinea');
             $table->string('origen');
             $table->string('destino');
-            $table->date('fechaSalida');
-            $table->date('fechaLlegada');
-            $table->time('horaSalida');
-            $table->time('horaLlegada');
+            $table->datetime('hora_salida');
+            $table->datetime('hora_llegada');
+            $table->integer('duracion');
+            $table->decimal('precio', 10, 2);
+            $table->boolean('escala');
+            $table->integer('asientos_disponibles');
             $table->timestamps();
         });
     }

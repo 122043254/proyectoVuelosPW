@@ -2,91 +2,65 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\validadorVuelos;
-use App\Models\vuelos;
+use App\Models\Vuelos;
 use Illuminate\Http\Request;
 
 class VuelosController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $consulta= vuelos::all();
-        return view('busquedaVuelos',['vuelos'=>$consulta]);
+        $vuelos = Vuelos::all();
+        return view('busquedaVuelos', compact('vuelos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('registroVuelos');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(validadorVuelos $request)
+    public function store(Request $request)
     {
-        $addvuelo = new vuelos;
-        $addvuelo->origen = $request->input('origen');
-        $addvuelo->destino = $request->input('destino');
-        $addvuelo->fechaSalida = $request->input('fechaSalida');
-        $addvuelo->fechaLlegada = $request->input('fechaLlegada');
-        $addvuelo->horaSalida = $request->input('horaSalida');
-        $addvuelo->horaLlegada = $request->input('horaLlegada');
-        $addvuelo->save();
+        $request->validate([
+            'origen' => 'required|string',
+            'destino' => 'required|string',
+            'fechaSalida' => 'required|date',
+            'fechaLlegada' => 'required|date|after_or_equal:fechaSalida',
+            'horaSalida' => 'required|date_format:H:i',
+            'horaLlegada' => 'required|date_format:H:i|after:horaSalida',
+        ]);
 
-        $msj = $request->input('origen');
-        session()->flash('exito', $msj);
-        return redirect()->back();
+        Vuelos::create($request->all());
+
+        session()->flash('exito', 'Vuelo registrado con éxito');
+        return redirect()->route('vuelos.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(vuelos $vuelos)
+    public function edit(Vuelos $vuelos)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(vuelos $vuelos)
-    {
-        $vuelos = vuelos::findOrFail($vuelos);
         return view('editarVuelos', compact('vuelos'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(validadorVuelos $request, vuelos $vuelos)
+    public function update(Request $request, Vuelos $vuelos)
     {
-        $vuelos = vuelos::findOrFail($vuelos);
-        $vuelos->origen = $request->input('origen');
-        $vuelos->destino = $request->input('destino');
-        $vuelos->fechaSalida = $request->input('fechaSalida');
-        $vuelos->fechaLlegada = $request->input('fechaLlegada');
-        $vuelos->horaSalida = $request->input('horaSalida');
-        $vuelos->horaLlegada = $request->input('horaLlegada');
-        $vuelos->save();
-        $msj = $request->input('origen');
-        session()->flash('exito', 'Se actualizo el vuelo: '.$msj);
-        return redirect()->back();
+        $request->validate([
+            'origen' => 'required|string',
+            'destino' => 'required|string',
+            'fechaSalida' => 'required|date',
+            'fechaLlegada' => 'required|date|after_or_equal:fechaSalida',
+            'horaSalida' => 'required|date_format:H:i',
+            'horaLlegada' => 'required|date_format:H:i|after:horaSalida',
+        ]);
+
+        $vuelos->update($request->all());
+
+        session()->flash('exito', 'Vuelo actualizado con éxito');
+        return redirect()->route('vuelos.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(vuelos $vuelos)
+    public function destroy(Vuelos $vuelos)
     {
-        $vuelos = vuelos::findOrFail($vuelos);
         $vuelos->delete();
-        session()->flash('exito', 'Vuelo borrado');
-        return redirect()->back();
+        session()->flash('exito', 'Vuelo eliminado con éxito');
+        return redirect()->route('vuelos.index');
     }
 }

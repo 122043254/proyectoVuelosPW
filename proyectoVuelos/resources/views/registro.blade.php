@@ -12,7 +12,7 @@
 @endif
 
 <x-card-form title="{{__('Registrate')}}">
-    <form action="/procesarRegistro" method="POST">
+    <form action="{{ route('usuarios.store')}}" method="POST">
         @csrf
         <div class="mb-3">
             <label for="nombre" class="form-label">{{__('Nombre')}}</label>
@@ -30,14 +30,19 @@
             <small class="text-danger fst-italic">{{ $errors->first('telefono') }}</small>
         </div>
         <div class="mb-3">
-            <label for="correo" class="form-label">{{__('Correo Electronico')}}</label>
-            <input type="email" class="form-control" id="correo" name="correo" value="{{ old('correo') }}">
-            <small class="text-danger fst-italic">{{ $errors->first('correo') }}</small>
+            <label for="email" class="form-label">{{__('Correo Electronico')}}</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}">
+            <small class="text-danger fst-italic">{{ $errors->first('email') }}</small>
         </div>
         <div class="mb-3">
-            <label for="contrasena" class="form-label">{{__('Contraseña')}}</label>
-            <input type="password" class="form-control" id="contrasena" name="contrasena" value="{{ old('contrasena') }}">
-            <small class="text-danger fst-italic">{{ $errors->first('contrasena') }}</small>
+            <label for="password" class="form-label">{{__('Contraseña')}}</label>
+            <input type="password" class="form-control" id="password" name="password" value="{{ old('password') }}">
+            <small class="text-danger fst-italic">{{ $errors->first('password') }}</small>
+        </div>
+        <div class="mb-3">
+            <label for="password_confirmation" class="form-label">{{__('Confirmar Contraseña')}}</label>
+            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}">
+            <small class="text-danger fst-italic">{{ $errors->first('password_confirmation') }}</small>
         </div>
         <div class="mb-3">
             <button type="submit" class="btn btn-primary w-100">{{__('Registrarse')}}</button>

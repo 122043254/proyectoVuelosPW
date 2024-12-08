@@ -22,10 +22,11 @@ class validadorRegistrar extends FormRequest
     public function rules(): array
     {
         return [
-            'correo'=> 'required|email',
-            'contrasena'=> 'required|string|min:8',
-            'nombre'=> 'required|string',
-            'telefono'=> 'required|numeric'
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'telefono' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
         ];
     }
 }

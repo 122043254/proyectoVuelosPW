@@ -1,48 +1,44 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ControladorVistas;
+use App\Http\Controllers\ProfileController;
+use App\Models\Usuario;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
-use App\Http\Controllers\HotelesController;
 use App\Http\Controllers\VuelosController;
-use App\Http\Controllers\ReservacionesVuelosController;
-use App\Http\Controllers\ReservacionesHotelesController;
+use App\Http\Controllers\HotelesController;
+use App\Http\Controllers\ReservacionesController;
 
-/*Route::get('/', [ControladorVistas::class, 'paginaprincipal'])->name('rutaPaginaprincipal');*/
+Route::get('/', [ControladorVistas::class, 'paginaprincipal'])->name('rutaPaginaprincipal');
 Route::get('/politicasCancelacion', [ControladorVistas::class, 'politicasCancelacion'])->name('rutaPoliticasCancelacion');
-Route::get('/iniciosesion', [ControladorVistas::class, 'iniciosesion'])->name('rutaIniciosesion');
-Route::get('/registro', [ControladorVistas::class, 'registro'])->name('rutaRegistro');
-Route::get('/recuperacionContrasena', [ControladorVistas::class, 'recuperacionContrasenas'])->name('rutaRecuperacionContrasena');
-Route::get('/perfilUsuario', [ControladorVistas::class, 'perfilUsuario'])->name('rutaPerfilUsuario');
-Route::get('/panelAdmin', [ControladorVistas::class, 'panelAdmin'])->name('rutaPanelAdmin');
 Route::get('/gestionVyHAdmin', [ControladorVistas::class, 'gestionVyHAdmin'])->name('rutaGestionVyHAdmin');
+Route::get('/panelAdmin', [ControladorVistas::class, 'panelAdmin'])->name('rutaPanelAdmin');
 Route::get('/reportesAdmin', [ControladorVistas::class, 'reportesAdmin'])->name('rutaReportesAdmin');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/', [ControladorVistas::class, 'paginaprincipal'])->name('rutaPaginaprincipal');
-    Route::resource('usuarios', UsuarioController::class);
-    Route::get('reservaciones', [UsuarioController::class, 'reservaciones'])->name('usuario.reservaciones');
-    Route::get('carrito', [UsuarioController::class, 'carrito'])->name('usuario.carrito');
-});
-
-//RUTAS USUARIOS
+// Rutas Usuarios
 Route::resource('usuarios', UsuarioController::class);
+Route::get('/iniciosesion', [UsuarioController::class, 'iniciarSesion'])->name('rutaInicioSesion');
 
-//RUTAS HOTELES
-Route::resource('hoteles', HotelesController::class);
-
-//RUTAS 
+// Rutas Vuelos
 Route::resource('vuelos', VuelosController::class);
 
-//RUTAS RESERVACIONES VUELOS
-Route::resource('reservacionesVuelos', ReservacionesVuelosController::class);
-Route::get('/reservarVuelo', [ReservacionesVuelosController::class, 'reservarVuelo'])->name(('rutaReservacionesVuelos'));
+// Rutas Hoteles
+Route::resource('hoteles', HotelesController::class);
 
-//RUTAS RESERVACIONES HOTELES
-Route::resource('reservacionesHoteles', ReservacionesHotelesController::class);
-Route::get('/reservarHotel', [ReservacionesHotelesController::class, 'reservarHotel'])->name('rutaReservacionesHoteles');
+// Rutas Reservaciones
+Route::get('/reservaciones/vuelos', [ReservacionesController::class, 'vistaReservarVuelos'])->name('rutaReservacionesVuelos');
+Route::get('/reservaciones/hoteles', [ReservacionesController::class, 'vistaReservarHoteles'])->name('rutaReservacionesHoteles');
 
 
-/*Auth::routes();*/
 
-/*Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');*/
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

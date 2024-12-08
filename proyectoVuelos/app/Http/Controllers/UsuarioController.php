@@ -2,122 +2,166 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Hoteles;
-use App\Models\ReservacionesHoteles;
-use App\Models\ReservacionesVuelos;
-use App\Models\Usuario;
-use App\Models\Vuelos;
+use App\Http\Requests\validadorRegistrar;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
 
 class UsuarioController extends Controller
 {
-
-    public function __construct()
+    // Vista de inicio de sesión
+    public function iniciarSesion()
     {
-        $this->middleware('auth');
+        return view('iniciosesion');
     }
 
-    // Mostrar todos los usuarios
-    public function index()
-    {
-        $consulta = Usuario::all();
-        return view('busquedaUsuarios', ['usuarios' => $consulta]);
-    }
-
-    // Crear nuevo usuario
-    public function store(Request $request)
+    // Manejar el inicio de sesión
+    public function login(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'apellidos' => 'required|string|max:255',
-            'telefono' => 'required|string|max:15',
-            'email' => 'required|email|unique:usuarios,email',
-            'password' => 'required|min:8|confirmed',
+            'email' => 'required|email',
+            'password' => 'required|string|min:8',
         ]);
 
-        $addusuario = new Usuario;
-        $addusuario->nombre = $request->input('nombre');
-        $addusuario->apellidos = $request->input('apellidos');
-        $addusuario->telefono = $request->input('telefono');
-        $addusuario->email = $request->input('email');
-        $addusuario->password = bcrypt($request->input('password'));
-        $addusuario->save();
+        $credentials = $request->only('email', 'password');
 
-        session()->flash('exito', 'Se guardó el usuario: ' . $request->input('nombre'));
-        return redirect()->back();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            return redirect()->route('perfil.usuario')->with('exito', 'Inicio de sesión exitoso');
+        }
+
+        return back()->withErrors([
+            'email' => 'Las credenciales proporcionadas no son correctas.',
+        ])->withInput($request->only('email'));
     }
 
-    // Editar usuario
-    public function edit(Usuario $usuario)
+    // Manejar el cierre de sesión
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('exito', 'Cierre de sesión exitoso');
+    }
+
+    // Listar usuarios
+    public function index()
+    {
+        $usuarios = User::all();
+        return view('busquedaUsuarios', compact('usuarios'));
+    }
+
+    // Vista para crear un usuario
+    public function create()
+    {
+        return view('registro');
+    }
+
+    // Almacenar un nuevo usuario
+    public function store(validadorRegistrar $request)
+    {
+        $user = User::create([
+            'nombre' => $request->nombre,
+            'apellidos' => $request->apellidos,
+            'telefono' => $request->telefono,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        event(new Registered($user)); // Esto dispara el evento de verificación de correo
+
+        session()->flash('exito', 'Usuario registrado con éxito. Por favor verifica tu correo electrónico.');
+        return redirect()->route('rutaInicioSesion');
+    }
+
+    // Editar un usuario
+    public function edit(User $usuario)
     {
         return view('editarUsuario', compact('usuario'));
     }
 
-    // Actualizar usuario
-    public function update(Request $request, Usuario $usuario)
+    // Actualizar un usuario
+    public function update(validadorRegistrar $request, User $usuario)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'apellidos' => 'required|string|max:255',
-            'telefono' => 'required|string|max:15',
-            'email' => 'required|email',
-            'password' => 'nullable|min:8|confirmed',
+        $usuario->update([
+            'nombre' => $request->nombre,
+            'apellidos' => $request->apellidos,
+            'telefono' => $request->telefono,
+            'email' => $request->email,
+            'password' => $request->password ? Hash::make($request->password) : $usuario->password,
         ]);
 
-        $usuario->nombre = $request->input('nombre');
-        $usuario->apellidos = $request->input('apellidos');
-        $usuario->telefono = $request->input('telefono');
-        $usuario->email = $request->input('email');
-        if ($request->input('password')) {
-            $usuario->password = bcrypt($request->input('password'));
-        }
-        $usuario->save();
-
-        session()->flash('exito', 'Se actualizó el usuario: ' . $request->input('nombre'));
-        return redirect()->back();
+        session()->flash('exito', 'Usuario actualizado con éxito');
+        return redirect()->route('usuarios.index');
     }
 
-    // Eliminar usuario
-    public function destroy(Usuario $usuario)
+    // Eliminar un usuario
+    public function destroy(User $usuario)
     {
         $usuario->delete();
-        session()->flash('exito', 'Usuario borrado');
-        return redirect()->back();
+        session()->flash('exito', 'Usuario eliminado con éxito');
+        return redirect()->route('usuarios.index');
     }
 
-    // Mostrar las reservaciones del usuario
-    public function reservaciones()
+    //FUNCIONES DE RESTABLECIMIENTO DE CONTRASEÑA
+
+    // Mostrar el formulario para solicitar el restablecimiento de contraseña
+    public function showLinkRequestForm()
     {
-        $reservaciones_vuelos = ReservacionesVuelos::where('usuario_id', Auth::id())->where('tipo', 'vuelo')->get();
-        $reservaciones_hoteles = ReservacionesHoteles::where('usuario_id', Auth::id())->where('tipo', 'hotel')->get();
-        return view('usuario.reservaciones', compact('reservaciones_vuelos', 'reservaciones_hoteles'));
+        return view('auth.recuperacionContrasena');
     }
 
-    // Mostrar el carrito de compras
-    public function carrito()
+    // Enviar el enlace de restablecimiento de contraseña
+    public function sendResetLinkEmail(Request $request)
     {
-        $carrito = session()->get('carrito', []);
-        return view('usuario.carrito', compact('carrito'));
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        // Enviar el enlace de restablecimiento de contraseña
+        $response = Password::sendResetLink($request->only('email'));
+
+        if ($response == Password::RESET_LINK_SENT) {
+            return back()->with('status', 'Te hemos enviado un enlace para restablecer tu contraseña');
+        } else {
+            return back()->withErrors(['email' => 'No podemos encontrar un usuario con ese correo electrónico.']);
+        }
     }
 
-    // Agregar un elemento al carrito
-    public function agregarAlCarrito(Request $request)
+    // Mostrar el formulario para restablecer la contraseña
+    public function showResetForm(Request $request, $token = null)
     {
-        $carrito = session()->get('carrito', []);
-
-        $item = [
-            'id' => $request->id,
-            'nombre' => $request->nombre,
-            'tipo' => $request->tipo, // Puede ser 'vuelo' o 'hotel'
-        ];
-
-        $carrito[] = $item;
-        session()->put('carrito', $carrito);
-
-        return redirect()->route('carrito.index');
+        return view('auth.reset-password', ['token' => $token, 'email' => $request->email]);
     }
 
+    // Restablecer la contraseña
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+            'token' => 'required',
+        ]);
+
+        // Procesar el restablecimiento de la contraseña
+        $response = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user) use ($request) {
+                $user->forceFill([
+                    'password' => Hash::make($request->password),
+                ])->save();
+            }
+        );
+
+        if ($response == Password::PASSWORD_RESET) {
+            return redirect()->route('login')->with('exito', 'Tu contraseña ha sido restablecida.');
+        }
+
+        return back()->withErrors(['email' => 'El token de restablecimiento no es válido.']);
+    }
 }

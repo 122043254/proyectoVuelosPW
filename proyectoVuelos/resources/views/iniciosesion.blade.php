@@ -12,7 +12,7 @@
 @endif
 
 <x-card-form title="{{__('Iniciar Sesión')}}">
-    <form action="/procesarInicioSesion" method="POST">
+    <form action="{{ route('rutaProcessarLogin') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label for="correo" class="form-label">{{__('Correo Electrónico')}}</label>

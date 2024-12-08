@@ -2,27 +2,32 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\reservacionesVuelos;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Reservaciones;
 
-class vuelos extends Model
+
+class Vuelos extends Model
 {
     use HasFactory;
+
     protected $table = 'vuelos';
+
     protected $fillable = [
+        'numero_vuelo',
+        'aerolinea',
         'origen',
         'destino',
-        'fechaSalida',
-        'fechaLlegada',
-        'horaSalida',
-        'horaLlegada'
+        'hora_salida',
+        'hora_llegada',
+        'duracion',
+        'precio',
+        'escala',
+        'asientos_disponibles',
     ];
-
-    public $timestamps = false;
 
     public function reservaciones()
     {
-        return $this->hasMany(reservacionesVuelos::class);
+        return $this->belongsToMany(Reservaciones::class, 'reservacion_vuelo');
     }
 }

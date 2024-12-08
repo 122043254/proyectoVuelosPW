@@ -99,7 +99,7 @@
         </ul>
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="btn btn-outline-primary" href="{{ route('rutaIniciosesion') }}">{{__('Iniciar Sesión')}}</a>
+            <a class="btn btn-outline-primary" href="{{ route('rutaInicioSesion') }}">{{__('Iniciar Sesión')}}</a>
           </li>
         </ul>
       </div>

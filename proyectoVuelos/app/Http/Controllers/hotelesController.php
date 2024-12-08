@@ -2,64 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\hoteles;
+use App\Models\Hoteles;
 use Illuminate\Http\Request;
 
 class HotelesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $hoteles = Hoteles::all();
+        return view('busquedaHoteles', compact('hoteles'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('registroHoteles');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'estrellas' => 'required|integer|min:1|max:5',
+            'descripcion' => 'required|string',
+            'precio_por_noche' => 'required|numeric|min:0',
+            'disponibilidad' => 'required|integer|min:0',
+        ]);
+
+        Hoteles::create($request->all());
+
+        session()->flash('exito', 'Hotel registrado con éxito');
+        return redirect()->route('hoteles.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(hoteles $hoteles)
+    public function edit(Hoteles $hotel)
     {
-        //
+        return view('editarHoteles', compact('hotel'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(hoteles $hoteles)
+    public function update(Request $request, Hoteles $hotel)
     {
-        //
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'estrellas' => 'required|integer|min:1|max:5',
+            'descripcion' => 'required|string',
+            'precio_por_noche' => 'required|numeric|min:0',
+            'disponibilidad' => 'required|integer|min:0',
+        ]);
+
+        $hotel->update($request->all());
+
+        session()->flash('exito', 'Hotel actualizado con éxito');
+        return redirect()->route('hoteles.index');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, hoteles $hoteles)
+    public function destroy(Hoteles $hotel)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(hoteles $hoteles)
-    {
-        //
+        $hotel->delete();
+        session()->flash('exito', 'Hotel eliminado con éxito');
+        return redirect()->route('hoteles.index');
     }
 }
